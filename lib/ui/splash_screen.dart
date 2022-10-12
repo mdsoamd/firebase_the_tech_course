@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    splashServices.isLogin(context);
+    splashServices.isLogin(context);   // <-- Thid Class SplashServices islogin Mehod call
   }
   
   
