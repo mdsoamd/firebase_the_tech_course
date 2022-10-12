@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "17372746140",
+    "project_id": "fir-the-tech-course",
+    "storage_bucket": "fir-the-tech-course.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:17372746140:android:b3e666e1d7da761196f859",
+        "android_client_info": {
+          "package_name": "com.example.firebase_the_tech_course"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "17372746140-9j296ri2ivc976vja9ivpr37v4u56b6r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfU9gXehE0Pxqv6cFcOfmCe_htRQRx8Xg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "17372746140-9j296ri2ivc976vja9ivpr37v4u56b6r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
