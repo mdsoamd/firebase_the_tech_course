@@ -1,6 +1,11 @@
 
+// ignore_for_file: prefer_const_constructors
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_the_tech_course/ui/auth/signup_screen.dart';
+import 'package:firebase_the_tech_course/ui/posts/post.dart';
+import 'package:firebase_the_tech_course/utils/utils.dart';
 import 'package:firebase_the_tech_course/widgets/round_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -12,9 +17,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+  
+  bool loading = false;
   final emailController = TextEditingController();
   final passwordlController = TextEditingController();
   final _fomekey = GlobalKey<FormState>();
+
+  FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
@@ -24,6 +34,32 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordlController.dispose();
   }
   
+
+
+ void login(){              // <-- Firebase Login Code Method
+  setState(() {
+    loading = true;
+  });
+  _auth.signInWithEmailAndPassword(email:emailController.text.trim().toString(), password: passwordlController.text.trim().toString()).
+  then((value){
+    Utils().tostMessage(value.user!.email.toString());
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>PostScreen()));
+    setState(() {
+      loading = false;
+    });
+  }).
+  onError((error, stackTrace){
+    debugPrint(error.toString());
+    Utils().tostMessage(error.toString());
+
+    setState(() {
+      loading = false;
+    });
+  
+  });
+ }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -96,13 +132,18 @@ class _LoginScreenState extends State<LoginScreen> {
     
               RoundButton(
                 title: "Login",
+                loading: loading,
                 onTap: (() {
-                  if (_fomekey.currentState!.validate()) {}
+                  if (_fomekey.currentState!.validate()) {
+
+                    login(); // <-- this call login Method
+                  }
                 }),
               ),
               SizedBox(
                 height: 30,
               ),
+              
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
