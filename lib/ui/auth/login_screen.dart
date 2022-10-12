@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:firebase_the_tech_course/widgets/round_button.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -8,6 +11,18 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final emailController = TextEditingController();
+  final passwordlController = TextEditingController();
+  final _fomekey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    emailController.dispose();
+    passwordlController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,10 +30,69 @@ class _LoginScreenState extends State<LoginScreen> {
         automaticallyImplyLeading: false,
         title: Text("Login"),
       ),
-      body: Column(
-        children: [
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Form(
+                key: _fomekey,
+                child: Column(
+                  children: [
 
-        ],
+                    
+                    TextFormField(
+                      keyboardType: TextInputType.emailAddress,
+                      controller: emailController,
+                      decoration: InputDecoration(
+                          hintText: "Email",
+                          prefixIcon: Icon(Icons.alternate_email)),
+                      validator: ((value) {
+                        if (value!.isEmpty) {
+                          return 'Enter Email';
+                        } else if (!value.contains("@")) {
+                          return "Plrase Enter valid Email ";
+                        }
+                        return null;
+                      }),
+                    ),
+
+
+                    SizedBox(
+                      height: 10,
+                    ),
+
+
+                    TextFormField(
+                      controller: passwordlController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                          hintText: "Password", prefixIcon: Icon(Icons.key)),
+                      validator: ((value) {
+                        if (value!.isEmpty) {
+                          return 'Enter password';
+                        }
+                        return null;
+                      }),
+                    ),
+                  ],
+                )),
+
+
+            SizedBox(
+              height: 20,
+            ),
+
+
+            RoundButton(
+              title: "Login",
+              onTap: (() {
+                if (_fomekey.currentState!.validate()) {}
+              }),
+            )
+          ],
+        ),
       ),
     );
   }
