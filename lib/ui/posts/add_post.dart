@@ -44,11 +44,11 @@ class _AddPostScreenState extends State<AddPostScreen> {
               height: 30,
             ),
             RoundButton(title: "Add",loading:loading, onTap: (){
-              
+
               setState(() {
                 loading = true;
               });
-              databaseRef.child(DateTime.now().millisecondsSinceEpoch.toString()).child("comente").set({
+              databaseRef.child(DateTime.now().millisecondsSinceEpoch.toString()).set({
                 "title": postController.text.toString(),
                 'id':DateTime.now().millisecondsSinceEpoch.toString()
                 
