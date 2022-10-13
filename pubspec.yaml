@@ -40,6 +40,7 @@ dependencies:
   uuid: ^3.0.6
   cloud_firestore: ^3.4.6
   fluttertoast: ^8.0.9
+  firebase_database: ^9.1.7
 
 dev_dependencies:
   flutter_test:
