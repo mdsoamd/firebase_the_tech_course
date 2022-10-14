@@ -15,9 +15,10 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
-  final _auth = FirebaseAuth.instance;
 
+  final _auth = FirebaseAuth.instance;
   final ref = FirebaseDatabase.instance.ref("Post");
+  final searchFilter = TextEditingController();
 
 
 
@@ -49,8 +50,29 @@ class _PostScreenState extends State<PostScreen> {
           )
         ],
       ),
+
+
       body: Column(
         children: [
+          SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: TextFormField(
+              controller: searchFilter,
+              decoration: InputDecoration(
+                hintText: "Search",
+                border: OutlineInputBorder()
+              ),
+              onChanged: ((String value) {
+                setState(() {
+                  
+                });
+              }),
+            ),
+          ),
+
 
 
           Expanded(
@@ -89,10 +111,23 @@ class _PostScreenState extends State<PostScreen> {
                 defaultChild: Center(child: Text("Loading")),
                 itemBuilder: (context, snapshot, animation, index) {
 
-                  return ListTile(
+                  final title = snapshot.child("title").value.toString();
+                  
+                  if(searchFilter.text.isEmpty){
+                    return ListTile(
                     title: Text(snapshot.child("title").value.toString()),
                     subtitle: Text(snapshot.child("id").value.toString()),
                   );
+                  }else if(title.toLowerCase().contains(searchFilter.text.toLowerCase().toString())){    // <--This Data Filter Code 
+                     return ListTile(
+                    title: Text(snapshot.child("title").value.toString()),
+                    subtitle: Text(snapshot.child("id").value.toString()),
+                  );
+                  }else{
+                    return Container();
+                  }
+                  
+                  
                 }),
           )
         ],
