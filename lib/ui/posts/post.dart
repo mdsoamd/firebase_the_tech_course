@@ -127,10 +127,15 @@ class _PostScreenState extends State<PostScreen> {
                                 PopupMenuItem(
                                     value: 1,
                                     child: ListTile(
+                                      onTap: (() {
+                                        Navigator.pop(context);
+                                        ref.child(snapshot.child("id").value.toString()).remove();    // <-- This code Data delete Mathod 
+                                      }),
                                       leading: Icon(Icons.delete),
                                       title: Text("Delete"),
                                     )),
                               ]),
+
                     );
                     
                   } else if (title.toLowerCase().contains(searchFilter.text.toLowerCase().toString())) {         // <--This Data Filter Code
