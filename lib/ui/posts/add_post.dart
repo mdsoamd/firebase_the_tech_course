@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_the_tech_course/utils/utils.dart';
 import 'package:firebase_the_tech_course/widgets/round_button.dart';
@@ -48,9 +50,12 @@ class _AddPostScreenState extends State<AddPostScreen> {
               setState(() {
                 loading = true;
               });
-              databaseRef.child(DateTime.now().millisecondsSinceEpoch.toString()).set({
+
+              String id = DateTime.now().millisecondsSinceEpoch.toString();   // <--This User id store Database create id variable
+              
+              databaseRef.child(id).set({                         // <-- This data add code
                 "title": postController.text.toString(),
-                'id':DateTime.now().millisecondsSinceEpoch.toString()
+                'id':id
                 
               }).then((value){
                 Utils().tostMessage("Post Added");
@@ -74,4 +79,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
       ),
     );
   }
+
+  
 }

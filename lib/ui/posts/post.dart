@@ -15,15 +15,13 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
-
   final _auth = FirebaseAuth.instance;
   final ref = FirebaseDatabase.instance.ref("Post");
   final searchFilter = TextEditingController();
+  final editController = TextEditingController();
 
-
-
-
-  void logout() {                      //  <-- this logout Method code
+  void logout() {
+    //  <-- this logout Method code
     _auth.signOut().then((value) {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => LoginScreen()));
@@ -31,8 +29,6 @@ class _PostScreenState extends State<PostScreen> {
       Utils().tostMessage(error.toString());
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +47,6 @@ class _PostScreenState extends State<PostScreen> {
         ],
       ),
 
-
       body: Column(
         children: [
           SizedBox(
@@ -62,80 +57,94 @@ class _PostScreenState extends State<PostScreen> {
             child: TextFormField(
               controller: searchFilter,
               decoration: InputDecoration(
-                hintText: "Search",
-                border: OutlineInputBorder()
-              ),
+                  hintText: "Search", border: OutlineInputBorder()),
               onChanged: ((String value) {
-                setState(() {
-                  
-                });
+                setState(() {});
               }),
             ),
           ),
 
+          // Expanded(
+          //     child: StreamBuilder(                 // <-- Yah Data Show kerne ka durra Tarika   (Stap 2  Data Display Method)
+          //   stream: ref.onValue,
+          //   builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+
+          //     if (!snapshot.hasData) {
+
+          //       return CircularProgressIndicator();
+
+          //     } else {
+
+          //       Map<dynamic, dynamic> map = snapshot.data!.snapshot.value as dynamic;
+          //       List<dynamic> list = [];   // <-- This All Data Store List
+          //       list.clear();
+          //       list = map.values.toList();
+
+          //       return ListView.builder(
+          //           itemCount: snapshot.data!.snapshot.children.length,
+          //           itemBuilder: (context, index) {
+          //             return ListTile(
+          //               title: Text(list[index]['title']),
+          //               subtitle: Text(list[index]['id']),
+          //             );
+          //           });
+          //     }
+          //   },
+          // )),
+
+
 
 
           Expanded(
-              child: StreamBuilder(                 // <-- Yah Data Show kerne ka durra Tarika   (Stap 2  Data Display Method)
-            stream: ref.onValue,
-            builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+            child: FirebaseAnimatedList(      // <-- Yah Data Show kerne ka Pahla Tarika    (Stap 1 Data Display Method)
 
-              if (!snapshot.hasData) {
-                
-                return CircularProgressIndicator();
-
-              } else {
-
-                Map<dynamic, dynamic> map = snapshot.data!.snapshot.value as dynamic;
-                List<dynamic> list = [];   // <-- This All Data Store List
-                list.clear();
-                list = map.values.toList();
-
-                return ListView.builder(
-                    itemCount: snapshot.data!.snapshot.children.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(list[index]['title']),
-                        subtitle: Text(list[index]['id']),
-                      );
-                    });
-              }
-            },
-          )),
-
-
-
-          Expanded(
-            child: FirebaseAnimatedList(           // <-- Yah Data Show kerne ka Pahla Tarika    (Stap 1 Data Display Method)
                 query: ref,
                 defaultChild: Center(child: Text("Loading")),
                 itemBuilder: (context, snapshot, animation, index) {
 
-                  final title = snapshot.child("title").value.toString();
-                  
-                  if(searchFilter.text.isEmpty){
+                  final title = snapshot.child("title").value.toString();   // <-- title data send showMyDialog create
+
+                  if (searchFilter.text.isEmpty) {
                     return ListTile(
-                    title: Text(snapshot.child("title").value.toString()),
-                    subtitle: Text(snapshot.child("id").value.toString()),
-                  );
-                  }else if(title.toLowerCase().contains(searchFilter.text.toLowerCase().toString())){    // <--This Data Filter Code 
-                     return ListTile(
-                    title: Text(snapshot.child("title").value.toString()),
-                    subtitle: Text(snapshot.child("id").value.toString()),
-                  );
-                  }else{
+                      title: Text(snapshot.child("title").value.toString()),
+                      subtitle: Text(snapshot.child("id").value.toString()),
+
+                      trailing: PopupMenuButton(          // <-- This PopupMenu use code
+                          icon: Icon(Icons.more_vert),
+                          itemBuilder: (context) => [
+
+                                PopupMenuItem(
+                                    value: 1,
+                                    child: ListTile(
+                                      onTap: () {
+                                        Navigator.pop(context);showMyDialog(title,snapshot.child("id").value.toString()); // <-- This data send title or id  (This call showMyDialog Method )
+                                      },
+                                      leading: Icon(Icons.edit),
+                                      title: Text("Eidt"),
+                                    )),
+
+
+                                PopupMenuItem(
+                                    value: 1,
+                                    child: ListTile(
+                                      leading: Icon(Icons.delete),
+                                      title: Text("Delete"),
+                                    )),
+                              ]),
+                    );
+                    
+                  } else if (title.toLowerCase().contains(searchFilter.text.toLowerCase().toString())) {         // <--This Data Filter Code
+                    return ListTile(
+                      title: Text(snapshot.child("title").value.toString()),
+                      subtitle: Text(snapshot.child("id").value.toString()),
+                    );
+                  } else {
                     return Container();
                   }
-                  
-                  
                 }),
           )
         ],
-
-
       ), // Column
-
-
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -147,5 +156,44 @@ class _PostScreenState extends State<PostScreen> {
         ),
       ),
     );
+  }
+
+  Future<dynamic> showMyDialog(String title, String id) async {    // <-- This Send data receive --> title and --> id
+
+    editController.text = title;      // <-- This code Old data Store TextField 
+
+    return showDialog(
+        context: context,builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Update"),
+            content: Container(
+              child: TextField(
+                controller: editController,
+              ),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Cancal")),
+
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+
+                    ref.child(id).update({                            // <-- This Data Update code or Method
+                      "title": editController.text.toLowerCase()
+                    }).then((value) {
+                      Utils().tostMessage("Post Update");         // <--This Code Successfully updata Show User
+                    }).onError((error, stackTrace) {
+                      Utils().tostMessage(error.toString());      // <-- This code Error Show user 
+                    });
+                  },
+
+                  child: Text("Update"))
+            ],
+          );
+        });
   }
 }
