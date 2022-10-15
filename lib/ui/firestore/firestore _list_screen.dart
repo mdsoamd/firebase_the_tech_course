@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_the_tech_course/ui/firestore/add_firestore_data.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,7 +22,9 @@ class _FireStoreScreenState extends State<FireStoreScreen> {
 
 final _auth = FirebaseAuth.instance;
 final editController = TextEditingController();
-final firestore = FirebaseFirestore.instance.collection('users').snapshots();    
+final firestore = FirebaseFirestore.instance.collection('users').snapshots();    // <-- This Create Fatch Data 
+FirebaseFirestore ref = FirebaseFirestore.instance;                              // <-- This Create Update and Delete data
+    
 
 
   void logout() {       //  <-- this logout Method code
@@ -76,12 +79,47 @@ final firestore = FirebaseFirestore.instance.collection('users').snapshots();
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
 
-              Map<String,dynamic> mapData = snapshot.data!.docs[index].data() as Map<String,dynamic>;   // This <-- Extra add use full code
+              Map<String,dynamic> mapData = snapshot.data!.docs[index].data() as Map<String,dynamic>;   //  <-- This Extra add use full code   (Create Map and Store data)
 
-                return ListTile(
+                return ListTile(   
+
                   title: Text(snapshot.data!.docs[index]["title"].toString()),  // <-- This Data Display and fatch First Stap
 
-                  subtitle: Text(mapData['id']),                               // <-- This Data Display and fatch Second Stap   (Use mapData)                         
+                  subtitle: Text(mapData['id']),  // <-- this data Store Map call 
+                  
+
+                  trailing: PopupMenuButton(          // <-- This PopupMenu use code
+                          color: Colors.pink[200],
+                          icon: Icon(Icons.more_vert),
+                          itemBuilder: (context) => [
+
+                                PopupMenuItem(
+                                    value: 1,
+                                    child: ListTile(
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                          showMyDialog(snapshot.data!.docs[index]["title"].toString() ,mapData['id']) ;     // <-- This data send title or id  (This call showMyDialog Method )
+                                      },
+                                      leading: Icon(Icons.edit),
+                                      title: Text("Eidt"),
+                                    )),
+
+
+                                PopupMenuItem(
+                                    value: 1,
+                                    child: ListTile(
+                                      onTap: (){
+                                        Navigator.pop(context);
+                                        ref.collection('users').doc(mapData['id']).delete();    // <-- This Data Delete Method code
+                                      },
+                                      leading: Icon(Icons.delete),
+                                      title: Text("Delete"),
+                                    )
+                                  ),
+
+
+
+                              ]),                           // <-- This Data Display and fatch Second Stap   (Use mapData)                         
                 );
               })
           );
@@ -106,6 +144,11 @@ final firestore = FirebaseFirestore.instance.collection('users').snapshots();
     );
   }
 
+
+
+
+
+
   Future<dynamic> showMyDialog(String title, String id) async {    // <-- This Send data receive --> title and --> id
 
     editController.text = title;      // <-- This code Old data Store TextField 
@@ -120,20 +163,39 @@ final firestore = FirebaseFirestore.instance.collection('users').snapshots();
               ),
             ),
             actions: [
+
               TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
                   child: Text("Cancal")),
 
+
               TextButton(
                   onPressed: () {
+
                     Navigator.pop(context);
+
+                    ref.collection('users').doc(id).update({         // <-- This FireStore Update adta Method code
+                      'title': editController.text
+                    }).then((value){
+                      Utils().tostMessage("Post Updated");
+    
+                    }).onError((error, stackTrace){
+                      Utils().tostMessage(error.toString());
+                    });
                   },
 
                   child: Text("Update"))
+
+                  
             ],
           );
         });
   }
+
+
+
+
+
 }
