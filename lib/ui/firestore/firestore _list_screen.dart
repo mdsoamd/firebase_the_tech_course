@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_the_tech_course/ui/firestore/add_firestore_data.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,7 +20,8 @@ class FireStoreScreen extends StatefulWidget {
 class _FireStoreScreenState extends State<FireStoreScreen> {
 
 final _auth = FirebaseAuth.instance;
- final editController = TextEditingController();
+final editController = TextEditingController();
+final firestore = FirebaseFirestore.instance.collection('users').snapshots();    
 
 
   void logout() {       //  <-- this logout Method code
@@ -53,51 +55,40 @@ final _auth = FirebaseAuth.instance;
 
       body: Column(
         children: [
-          
+
           SizedBox(
             height: 20,
           ),
 
-          // Expanded(
-          //     child: StreamBuilder(                 // <-- Yah Data Show kerne ka durra Tarika   (Stap 2  Data Display Method)
-          //   stream: ref.onValue,
-          //   builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
 
-          //     if (!snapshot.hasData) {
+          StreamBuilder(                // <-- This Code Firestore Database data Fatch and display Method        (Use StreamBuilder)
+            stream: firestore,
+            builder: (BuildContext context,AsyncSnapshot<QuerySnapshot> snapshot){
 
-          //       return CircularProgressIndicator();
+              if(snapshot.connectionState == ConnectionState.waiting)
+              return CircularProgressIndicator();
 
-          //     } else {
-
-          //       Map<dynamic, dynamic> map = snapshot.data!.snapshot.value as dynamic;
-          //       List<dynamic> list = [];   // <-- This All Data Store List
-          //       list.clear();
-          //       list = map.values.toList();
-
-          //       return ListView.builder(
-          //           itemCount: snapshot.data!.snapshot.children.length,
-          //           itemBuilder: (context, index) {
-          //             return ListTile(
-          //               title: Text(list[index]['title']),
-          //               subtitle: Text(list[index]['id']),
-          //             );
-          //           });
-          //     }
-          //   },
-          // )),
-
-
-
-
-          Expanded(
+              if(snapshot.hasError)
+              return Text("Some Error");
+            
+            return Expanded(
             child: ListView.builder(
-              itemCount: 10,
+              itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
+
+              Map<String,dynamic> mapData = snapshot.data!.docs[index].data() as Map<String,dynamic>;   // This <-- Extra add use full code
+
                 return ListTile(
-                  title: Text("Post"),
+                  title: Text(snapshot.data!.docs[index]["title"].toString()),  // <-- This Data Display and fatch First Stap
+
+                  subtitle: Text(mapData['id']),                               // <-- This Data Display and fatch Second Stap   (Use mapData)                         
                 );
               })
-          )
+          );
+        }
+      ),
+
+          
         ],
       ), // Column
 
