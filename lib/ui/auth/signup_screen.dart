@@ -98,10 +98,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       controller: passwordlController,
                       obscureText: true,
                       decoration: InputDecoration(
-                          hintText: "Password", prefixIcon: Icon(Icons.key)),
+                          hintText: "Create Password", prefixIcon: Icon(Icons.key)),
                       validator: ((value) {
                         if (value!.isEmpty) {
-                          return 'Enter password';
+                          return 'please Create password';
                         }
                         return null;
                       }),

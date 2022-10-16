@@ -19,7 +19,7 @@ class SplashServices{
 
     if(user!=null){   // <-- this check user login 
     
-      Timer(const Duration(seconds: 3),() => Navigator.push(context, MaterialPageRoute(builder:(context) => UploadImageScreen())));
+      Timer(const Duration(seconds: 3),() => Navigator.push(context, MaterialPageRoute(builder:(context) => PostScreen())));
     }else{
       Timer(const Duration(seconds: 3),() => Navigator.push(context, MaterialPageRoute(builder:(context) => LoginScreen())));
     }
