@@ -36,8 +36,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
     _auth
         .createUserWithEmailAndPassword(
-            email: emailController.text.trim().toString(),
-            password: passwordlController.text.trim().toString())
+            email: emailController.text.toString().trim(),
+            password: passwordlController.text.toString().trim())
         .then((value) {
       setState(() {
         loading = false;
