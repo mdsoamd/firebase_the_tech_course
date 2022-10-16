@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_the_tech_course/ui/auth/login_screen.dart';
 import 'package:firebase_the_tech_course/ui/firestore/firestore%20_list_screen.dart';
 import 'package:firebase_the_tech_course/ui/posts/post.dart';
+import 'package:firebase_the_tech_course/ui/upload_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,7 @@ class SplashServices{
 
     if(user!=null){   // <-- this check user login 
     
-      Timer(const Duration(seconds: 3),() => Navigator.push(context, MaterialPageRoute(builder:(context) => FireStoreScreen())));
+      Timer(const Duration(seconds: 3),() => Navigator.push(context, MaterialPageRoute(builder:(context) => UploadImageScreen())));
     }else{
       Timer(const Duration(seconds: 3),() => Navigator.push(context, MaterialPageRoute(builder:(context) => LoginScreen())));
     }
